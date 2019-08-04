@@ -1,40 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';  
-import { Button } from 'antd';
+import React, { Component } from 'react';
+import { Button,Message } from 'antd';
+import DocumentTitle from 'react-document-title';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <Button type="primary" shape="circle" icon="search" />
-        <Button type="primary" icon="search">
-          Search
-        </Button>
-        <Button shape="circle" icon="search" />
-        <Button icon="search">Search</Button>
-        <br />
-        <Button shape="circle" icon="search" />
-        <Button icon="search">Search</Button>
-        <Button type="dashed" shape="circle" icon="search" />
-        <Button type="dashed" icon="search">
-          Search
-        </Button>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+	state = {
+		title : 'React-微人事'
+	}
+	showInfo = ()=>{
+		Message.info('hello world')
+	}
+	render() {
+		let { title } = this.state
+		return (<DocumentTitle title={title}>
+			<div className="App">
+				<Button type="primary" onClick={this.showInfo}>
+					Display normal message
+				</Button>
+			</div>
+		</DocumentTitle>);
+	}
 }
-
 export default App;
