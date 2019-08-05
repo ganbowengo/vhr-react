@@ -7,11 +7,11 @@
  */
 const proxy = require('http-proxy-middleware')
 module.exports = function (app) {
-    app.use(proxy('/frontend', {
-        target: 'http://192.168.2.231:8000',
+    app.use(proxy('/api', {
+        target: 'http://127.0.0.1:8082/api',
         secure: false,
         pathRewrite: {
-            '^/': '/' // 调用'http://192.168.2.231:8000/search'，直接写‘/api/search’即可
+            '^/api': '/' // 调用'http://192.168.2.231:8000/search'，直接写‘/api/search’即可
         }
     }))
 }

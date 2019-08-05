@@ -1,69 +1,98 @@
-/**
- *
- * author ganbowen
- * description axios 封装文件
- * created 2019/05/4 14:33:09
- *
- */
 import axios from 'axios'
-// import { transDictionary } from '../utils/trans'
-import { message } from 'antd';
-const BASE_URL = '/frontend'
-const STATUS_LIST = [401, 403, 500]
-const MESSAGE_LIST = ['没有访问权限!', 'token错误，请重新登录！', 'token为空，请重新登录！', 'token失效，请重新登录！', 'token验签错误，请重新登录！', 'token超时，请重新登录！']
-const NULL_TOKEN_URL = ['/sys/token', '/sys/login']
-const jumpLogin = () => {
-    window.location.href = 'login.html'
-}
+import {
+    message
+} from 'antd'
 
 axios.interceptors.request.use(config => {
-    // 在发送请求之前做些什么
-    let token = window.sessionStorage.getItem('token')
-    if (token) { // mock 开启时不判断是否有token
-        config.headers.author = token
-    } else {
-        if (NULL_TOKEN_URL.indexOf(config.url) < 0) {
-            jumpLogin()
-        }
-    }
-    config.url = BASE_URL + config.url
-    if (config.data && config.data.options) {
-        config.options = config.data.options
-        config.data = config.data.params
-    }
-    return config
-}, error => Promise.reject(error))
-
-axios.interceptors.response.use(response => {
-    // 对响应数据做点什么
-    if (response.config.url === '/frontend/sys/token') {
-        // if (MOCK) {
-        //     response.headers.author = response.headers.author || 'mock'
-        // }
-        return response
-    } else {
-        let result = response.data
-        if (!result.success) {
-            message.error(result.errorMsg)
-        } else {
-            let optionsConfig = response.config.options
-            if (optionsConfig) {
-                if (result && result.data) {
-                    // result.data = transDictionary(result.data, optionsConfig.trans, optionsConfig.trnasType)
-                }
-            }
-        }
-        return result
-    }
-}, error => {
-    // 对响应错误做点什么
-    let response = error.response || {}
-    let data = response.data || {}
-    if (STATUS_LIST.indexOf(response.status) > -1 && MESSAGE_LIST.indexOf(data.message) > -1) {
-        message.error(data.message)
-        jumpLogin()
-    }
-    return Promise.reject(error)
+    return config;
+}, err => {
+    message.error('请求超时!');
 })
 
-export default axios
+axios.interceptors.response.use(data => {
+    if (data.status && data.status === 200 && data.data.status === 500) {
+        message.error(data.data.msg);
+        return;
+    }
+    if (data.data.msg) {
+        message.success(data.data.msg);
+    }
+    return data;
+}, err => {
+    if (err.response.status === 504 || err.response.status === 404) {
+        message.error('服务器被吃了⊙﹏⊙∥');
+    } else if (err.response.status === 403) {
+        message.error('权限不足,请联系管理员!');
+    } else if (err.response.status === 401) {
+        message.error(err.response.data.msg);
+    } else {
+        if (err.response.data.msg) {
+            message.error(err.response.data.msg);
+        } else {
+            message.error('未知错误!');
+        }
+    }
+    // return Promise.resolve(err);
+})
+
+let base = 'api';
+export const postRequest = (url, params) => {
+    return axios({
+        method: 'post',
+        url: `${base}${url}`,
+        data: params,
+        transformRequest: [function (data) {
+            let ret = ''
+            for (let it in data) {
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+        }],
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    });
+}
+
+export const uploadFileRequest = (url, params) => {
+    return axios({
+        method: 'post',
+        url: `${base}${url}`,
+        data: params,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+}
+
+export const putRequest = (url, params) => {
+    return axios({
+        method: 'put',
+        url: `${base}${url}`,
+        data: params,
+        transformRequest: [function (data) {
+            let ret = ''
+            for (let it in data) {
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+        }],
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    });
+}
+
+export const deleteRequest = (url) => {
+    return axios({
+        method: 'delete',
+        url: `${base}${url}`
+    });
+}
+
+export const getRequest = (url) => {
+    return axios({
+        method: 'get',
+        url: `${base}${url}`
+    });
+}

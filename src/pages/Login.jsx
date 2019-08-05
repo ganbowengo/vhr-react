@@ -1,12 +1,11 @@
 import React from 'react'
 import { Input, Button, Icon } from 'antd';
 import { login, getToken } from '../assets/api/index'
-import md5 from 'md5'
 
 export default class Login extends React.Component{
     state = {
-        userName: '11123456789',
-        password: '12345678W@'
+        userName: 'admin',
+        password: '123'
     }
     userNameChange = key => {
         this.setState({
@@ -20,24 +19,16 @@ export default class Login extends React.Component{
     }
     login = () => {
         let parms = {
-            userName: this.state.userName,
-            password:  md5(this.state.password)
+            username: this.state.userName,
+            password:  this.state.password
         }
-        login(parms).then(res => {
-            if (res.success) {
-                let data = res.data && res.data[0] || {}
-                this.saveUserInfo(data)
-                return getToken(parms)
+        login(parms).then(resp=> {
+            if (resp && resp.status == 200) {
+              var data = resp.data;
+              console.log('data.obj', data.obj)
+              this.props.history.push({pathname: '/app'})
             }
-        }).then(res => {
-            let token = res.headers.author
-            if(token){
-                sessionStorage.setItem('token', token)
-                this.props.history.push({pathname: '/app'})
-            }
-        }).catch(error => {
-            throw error
-        })
+          });
     }   
     saveUserInfo(data = {}){
         Object.keys(data).forEach(key => {
@@ -46,16 +37,6 @@ export default class Login extends React.Component{
     }
     render(){
         let { userName, password } = this.state
-        const formItemLayout = {
-            labelCol: {
-              xs: { span: 0 },
-              sm: { span: 0 },
-            },
-            wrapperCol: {
-              xs: { span: 24 },
-              sm: { span: 24 },
-            },
-        };
         return (
             <div className='login'>
                 <h3 className='login-title'>React-微人事</h3>
