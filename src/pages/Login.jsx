@@ -25,7 +25,7 @@ export default class Login extends React.Component{
         login(parms).then(resp=> {
             if (resp && resp.status == 200) {
               var data = resp.data;
-              console.log('data.obj', data.obj)
+              sessionStorage.setItem('user',  data.obj)
               this.props.history.push({pathname: '/app'})
             }
           });
