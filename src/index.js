@@ -4,8 +4,12 @@ import './index.css';
 import Page from './Page'
 import * as serviceWorker from './serviceWorker';
 import './assets/style/index.scss'
+import store from './store'
+import { Provider } from 'react-redux'
 
-ReactDOM.render(<Page />, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}>
+    <Page />
+</Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

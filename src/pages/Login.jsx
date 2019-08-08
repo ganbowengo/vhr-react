@@ -1,8 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { setUser } from '../store/actions'
 import { Input, Button, Icon } from 'antd';
-import { login, getToken } from '../assets/api/index'
+import { login } from '../assets/api/index'
 
-export default class Login extends React.Component{
+class Login extends React.Component{
     state = {
         userName: 'admin',
         password: '123'
@@ -22,11 +25,12 @@ export default class Login extends React.Component{
             username: this.state.userName,
             password:  this.state.password
         }
-        login(parms).then(resp=> {
-            if (resp && resp.status == 200) {
-              var data = resp.data;
-              sessionStorage.setItem('user',  data.obj)
-              this.props.history.push({pathname: '/app'})
+        login(parms).then(resp => {
+            if (resp && resp.status === 200) {
+                var data = resp.data;
+                this.props.setUser(data.obj)
+                console.log('this.props.user', this.props.user)
+                this.props.history.push({pathname: '/app'})
             }
           });
     }   
@@ -53,3 +57,15 @@ export default class Login extends React.Component{
         )
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        user: state.user
+    }
+  }
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        setUser: setUser
+    }, dispatch)
+)
+export default connect(mapStateToProps,mapDispatchToProps)(Login)

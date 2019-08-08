@@ -10,6 +10,7 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(data => {
+    console.log('data', data)
     if (data.status && data.status === 200 && data.data.status === 500) {
         message.error(data.data.msg);
         return;
@@ -32,7 +33,6 @@ axios.interceptors.response.use(data => {
             message.error('未知错误!');
         }
     }
-    // return Promise.resolve(err);
 })
 
 let base = 'api';
