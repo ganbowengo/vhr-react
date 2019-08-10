@@ -1,3 +1,10 @@
+/*
+ * @Description: http
+ * @Author: ganbowen
+ * @Date: 2019-08-04 10:28:33
+ * @LastEditTime: 2019-08-10 18:33:43
+ * @LastEditors: Please set LastEditors
+ */
 import axios from 'axios'
 import {
     message
@@ -10,10 +17,10 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(data => {
-    console.log('data', data)
-    if (data.status && data.status === 200 && data.data.status === 500) {
+    if (data.status && data.data.status === 500) {
         message.error(data.data.msg);
-        return;
+        window.location.href = '#/login'
+        return 
     }
     if (data.data.msg) {
         message.success(data.data.msg);

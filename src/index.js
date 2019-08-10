@@ -1,3 +1,10 @@
+/*
+ * @Description: input file
+ * @Author: ganbowen
+ * @Date: 2019-07-09 20:06:46
+ * @LastEditTime: 2019-08-10 15:51:08
+ * @LastEditors: Please set LastEditors
+ */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';

@@ -1,24 +1,16 @@
-import react,{ Component } from 'react'
-import { Route, Redirect, Switch } from 'react-router-dom';
+import React from 'react'
+import { Component } from 'react'
+import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import routerConfig from './config'
+import Test from '../components/test'
 
 
 export default class CRouter extends Component {
     render() {
-        return ({
+        return (<Router>
             <Switch>
-                {
-                    Objecy.keys(routerConfig).map(key => {
-                        routerConfig[key].map(r => {
-                            return (
-                                <Route />
-                            )
-                        })
-                        return r.component ? route(r) : r.subs.map(r => route(r));
-                    })
-                }
-                <Route render={() => <Redirect to="/404" />} />
+                <Route path="/app/emp/basic" component={Test} />
             </Switch>
-        })
+        </Router>)
     }
 }

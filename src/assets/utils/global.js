@@ -1,3 +1,10 @@
+/*
+ * @Description: 全局工具函数
+ * @Author: ganbowen
+ * @Date: 2019-08-04 10:57:13
+ * @LastEditTime: 2019-08-10 15:49:45
+ * @LastEditors: Please set LastEditors
+ */
 /**
  *
  * author ganbowen

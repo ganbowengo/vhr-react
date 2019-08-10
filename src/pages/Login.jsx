@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { setUser } from '../store/actions'
-import { Input, Button, Icon } from 'antd';
+import { Input, Button, Icon } from 'antd'
 import { login } from '../assets/api/index'
 
 class Login extends React.Component{
@@ -32,7 +32,7 @@ class Login extends React.Component{
                 console.log('this.props.user', this.props.user)
                 this.props.history.push({pathname: '/app'})
             }
-          });
+        });
     }   
     saveUserInfo(data = {}){
         Object.keys(data).forEach(key => {
@@ -45,10 +45,10 @@ class Login extends React.Component{
             <div className='login'>
                 <h3 className='login-title'>React-微人事</h3>
                 <div className='login-item'>
-                    <Input value={userName} onChange={this.userNameChange} prefix={<Icon type="user" style={{ fontSize: 13 }} />}  placeholder="用户名：" />
+                    <Input value={userName} onChange={this.userNameChange} prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="用户名：" />
                 </div>
                 <div className='login-item'>
-                    <Input value={password}  onChange={this.passwordChange} prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type='password' placeholder="密码：" />
+                    <Input value={password} onChange={this.passwordChange} prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type='password' placeholder="密码：" />
                 </div>
                 <div className='login-item'>
                     <Button type="primary" onClick={this.login} block>登 录</Button>
@@ -62,10 +62,11 @@ const mapStateToProps = state => {
     return {
         user: state.user
     }
-  }
+}
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
         setUser: setUser
     }, dispatch)
 )
+
 export default connect(mapStateToProps,mapDispatchToProps)(Login)

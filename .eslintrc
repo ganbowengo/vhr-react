@@ -1,0 +1,25 @@
+{
+    "root": true,
+    "parser": "babel-eslint",
+    "env": {
+        "browser":true,
+        "es6":true,
+        "node":true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "rules": {
+        "no-multi-spaces": 2, //2代表error  运行报错，必须处理
+        "no-debugger": 1, //1代表警告， 可忽略； 0 代表屏蔽该规则
+        "eol-last": [ //写成中括号 可配置其他参数，具体参数可参考官网
+            2,
+            "never"
+        ],
+        "indent": [2, 4], //举例缩进： 第一个2代表 运行错误， 第二个2 代表缩进2格   
+    }
+}

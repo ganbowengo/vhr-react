@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-04 14:48:58
+ * @LastEditTime: 2019-08-04 14:48:58
+ * @LastEditors: your name
+ */
 import React from 'react'
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Login from './pages/Login';

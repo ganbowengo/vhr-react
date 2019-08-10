@@ -1,3 +1,10 @@
+/*
+ * @Description: 全局接口转换函数
+ * @Author: your name
+ * @Date: 2019-08-04 10:57:13
+ * @LastEditTime: 2019-08-10 15:47:50
+ * @LastEditors: Please set LastEditors
+ */
 /**
  *
  * author ganbowen
