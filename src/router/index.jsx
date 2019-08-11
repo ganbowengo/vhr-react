@@ -2,7 +2,7 @@ import React from 'react'
 import { Component } from 'react'
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import routerConfig from './config'
-import Test from '../components/test'
+import Test from '../components/baseInfo'
 
 
 export default class CRouter extends Component {

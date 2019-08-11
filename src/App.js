@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-09 20:06:46
- * @LastEditTime: 2019-08-10 19:04:03
+ * @LastEditTime: 2019-08-11 18:02:25
  * @LastEditors: Please set LastEditors
  */
 import React, { Component } from 'react'
@@ -12,13 +12,14 @@ import DocumentTitle from 'react-document-title'
 import SiderMneu from './components/SliderCustom'
 import { logout } from './assets/api'
 import Routes from './router'
-import './App.css';
+import './assets/style/App.css';
 
 const { Header, Content, Footer } = Layout;
 
 class App extends Component {
 	state = {
-	    title : 'React-微人事'
+	    title : 'React-微人事',
+	    currenBreadcrumb: ['首页']
 	}
 	logout = () => {
 	    logout().then(res=>{
@@ -48,8 +49,11 @@ class App extends Component {
 	        onOk: this.logout
 	    })
 	}
-	selectMenu = e => {
+	selectMenu = (e,currenBreadcrumb) => {
 	    this.props.history.push({pathname: '/app' + e.key})
+	    this.setState({
+	        currenBreadcrumb : currenBreadcrumb
+	    })
 	}
 	menu = (
 		<Menu onClick={this.dropClick}>
@@ -60,8 +64,7 @@ class App extends Component {
 	)
 	render() {
 	    const { user } = this.props
-	    console.log('user',user)
-	    let { title } = this.state
+	    let { title, currenBreadcrumb } = this.state
 	    return (<DocumentTitle title={title}>
 	        <Layout style={{ minHeight: '100%' }}>
 	            <Header style={{ background: '#fff', display: 'flex', justifyContent:' space-between' }} >
@@ -76,12 +79,13 @@ class App extends Component {
 	            <Layout>
 	                <SiderMneu selectMenu={this.selectMenu}></SiderMneu>
 	                <Layout>
-	                    <Content style={{ margin: '0 16px' }}>
+	                    <Content style={{ margin: '0 16px',height: '100%' }}>
 	                        <Breadcrumb style={{ margin: '16px 0' }}>
-	                            <Breadcrumb.Item>User</Breadcrumb.Item>
-	                            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+	                            {
+	                                currenBreadcrumb.map((item,index) => (<Breadcrumb.Item key={index}>{item}</Breadcrumb.Item>))
+	                            }
 	                        </Breadcrumb>
-	                        <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
+	                        <div style={{ padding: 24, background: '#fff', minHeight: 360, height: 'calc(100% - 53px)' }}>
 	                            <Routes />
 	                        </div>
 	                    </Content>
@@ -92,7 +96,6 @@ class App extends Component {
 	    </DocumentTitle>);
 	}
 }
-
 
 const mapStateToProps = state => {
     return {

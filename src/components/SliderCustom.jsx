@@ -7,30 +7,34 @@ const { Sider } = Layout;
 
 class SiderMenu extends React.Component {
     // 一级菜单组件
-    rootSubmenuKeys = null
+    rootSubmenuKeys = {}
+    currentBreadcrumb = '首页'
     state = {
         openKeys: [],
         menu:[]
     }
     componentWillMount() {
         getMenu().then(res => {
-            if(res){
-                this.rootSubmenuKeys = res.data.map(({id}) => id.toString())
+            if(res.success){
+                res.data.forEach(({id,name}) => {
+                    this.rootSubmenuKeys[id] = name
+                })
                 this.setState({ menu: res.data})
             }
         })
     }
-    handleClick = e => {
-        this.props.selectMenu(e)
+    handleSelect = e => {
+        this.props.selectMenu(e,[this.currentBreadcrumb,e.item.props.children])
     }
-    onOpenChange = openKeys => {
+    onOpenChange = (openKeys) => {
+        this.currentBreadcrumb = this.rootSubmenuKeys[openKeys[openKeys.length-1]] || this.currentBreadcrumb
         this.setState({ openKeys : [openKeys[openKeys.length - 1]] })
     }
     render() {
         return (
             <Sider style={{ width: 256 }}>
                 <Menu
-                    onSelect={this.handleClick}
+                    onSelect={this.handleSelect}
                     openKeys={this.state.openKeys}
                     onOpenChange={this.onOpenChange}
                     mode="inline"

@@ -2,14 +2,14 @@
  * @Description: http
  * @Author: ganbowen
  * @Date: 2019-08-04 10:28:33
- * @LastEditTime: 2019-08-10 18:33:43
+ * @LastEditTime: 2019-08-11 18:20:38
  * @LastEditors: Please set LastEditors
  */
 import axios from 'axios'
 import {
     message
 } from 'antd'
-
+import { setUrl } from './tool'
 axios.interceptors.request.use(config => {
     return config;
 }, err => {
@@ -20,10 +20,16 @@ axios.interceptors.response.use(data => {
     if (data.status && data.data.status === 500) {
         message.error(data.data.msg);
         window.location.href = '#/login'
-        return 
+        return
     }
     if (data.data.msg) {
         message.success(data.data.msg);
+    }
+    if (data.status === 200) {
+        data = {
+            data: data.data,
+            success: true
+        }
     }
     return data;
 }, err => {
@@ -44,6 +50,7 @@ axios.interceptors.response.use(data => {
 
 let base = 'api';
 export const postRequest = (url, params) => {
+    console.log('`${base}${url}', `${base}${url}`)
     return axios({
         method: 'post',
         url: `${base}${url}`,
@@ -73,6 +80,7 @@ export const uploadFileRequest = (url, params) => {
 }
 
 export const putRequest = (url, params) => {
+    console.log('`${base}${url}', `${base}${url}`)
     return axios({
         method: 'put',
         url: `${base}${url}`,
@@ -97,9 +105,9 @@ export const deleteRequest = (url) => {
     });
 }
 
-export const getRequest = (url) => {
+export const getRequest = (url, options) => {
     return axios({
         method: 'get',
-        url: `${base}${url}`
+        url: `${base}${url}${setUrl(options)}`
     });
 }
