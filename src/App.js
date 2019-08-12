@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-09 20:06:46
- * @LastEditTime: 2019-08-12 11:50:14
+ * @LastEditTime: 2019-08-12 19:43:17
  * @LastEditors: Please set LastEditors
  */
 import React, { Component } from 'react'
@@ -22,14 +22,14 @@ class App extends Component {
 	    currenBreadcrumb: ['首页']
 	}  
 	logout = () => {
-	    logout().then(res=>{
-	        if(res.status === 200){
+	    logout().then(res => {
+	        if(res.success){
 	            this.props.history.push({pathname: '/login'})
 	        }
 	    })
 	}
 	componentDidMount() {
-	    this.setState({
+	    this.props.bread && this.setState({
 	        currenBreadcrumb: this.props.bread
 	    })
 	}
@@ -70,6 +70,7 @@ class App extends Component {
 	render() {
 	    const { user } = this.props
 	    let { title, currenBreadcrumb } = this.state
+	    console.log('currenBreadcrumb',currenBreadcrumb)
 	    return (<DocumentTitle title={title}>
 	        <div style={{ height: '100%',width:'100%' }}>
 	            <Header style={{ width: '100%',background: '#fff', display: 'flex', justifyContent:' space-between' }} >
@@ -90,7 +91,7 @@ class App extends Component {
 	                                currenBreadcrumb.map((item,index) => (<Breadcrumb.Item key={index}>{item}</Breadcrumb.Item>))
 	                            }
 	                        </Breadcrumb>
-	                        <div style={{ padding: 24, background: '#fff', minHeight: 360, height: 'calc(100% - 53px)' }}>
+	                        <div style={{ padding: 24, background: '#fff', minHeight: 360, height: 'calc(100% - 53px)',borderTop:'1px solid #ccc' }}>
 	                            <Routes />
 	                        </div>
 	                    </div>

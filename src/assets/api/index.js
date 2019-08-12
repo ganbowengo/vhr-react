@@ -2,7 +2,7 @@
  * @Description: global http request
  * @Author: ganbowen
  * @Date: 2019-08-04 11:03:58
- * @LastEditTime: 2019-08-11 18:24:15
+ * @LastEditTime: 2019-08-12 19:58:17
  * @LastEditors: Please set LastEditors
  */
 import {
@@ -26,4 +26,9 @@ export function getMenu(parms) {
 // 获取员工基本信息
 export function getEmpInfo(parms) {
     return getRequest('/employee/basic/emp', parms)
+}
+
+// 获取员工基本信息
+export function getBasicData(parms){
+    return getRequest('/employee/basic/basicdata', parms)
 }

@@ -1,7 +1,8 @@
 import React from 'react'
-import { Input, Button, Table } from 'antd'
-import { getEmpInfo } from '../assets/api'
+import { Input, Button, Table, Select } from 'antd'
+import { getEmpInfo, getBasicData } from '../assets/api'
 import { splitDate } from '../assets/js/tool'
+const { Option } = Select
 
 class Test extends React.Component {
     state = {
@@ -16,6 +17,12 @@ class Test extends React.Component {
         departmentId: '',
         beginDateScope: '',
         showMore: false,
+        deps: [],
+        joblevels: [],
+        nations: [],
+        politics: [],
+        positions: [],
+        workID: [],
         columns:[
             {
                 title: '姓名',
@@ -159,19 +166,19 @@ class Test extends React.Component {
         fixed: true,
 
     };
+    componentWillMount() {
+        getBasicData().then(res => {
+            console.log('res',res.data)
+            if(res.success){
+                this.setState({
+                    ...res.data
+                })
+            }
+        })
+    }
     search = _ => {
-        let params = {
-            page: 1,
-            size: 10,
-            keywords: this.state.keywords,
-            politicId: '',
-            nationId: '',
-            posId: '',
-            jobLevelId:'',
-            engageForm: '',
-            departmentId: '',
-            beginDateScope: '',
-        }
+        let {page,size,keywords,politicId,nationId,posId,jobLevelId,engageForm,departmentId,beginDateScope} = this.state
+        let params ={page,size,keywords,politicId,nationId,posId,jobLevelId,engageForm,departmentId,beginDateScope}
         getEmpInfo(params).then(res => {
             if(res.success){
                 this.setState({
@@ -193,15 +200,51 @@ class Test extends React.Component {
             keywords: e.target.value
         })
     }
+    joblevels = e => {
+        this.setState({
+            jobLevelId: e
+        })
+    }
+    nations = e => {
+        this.setState({
+            nationId: e
+        })
+    } 
+    politics = e => {
+        this.setState({
+            politicId: e
+        })
+    } 
+    positions = e => {
+        console.log('e',e)
+        this.setState({
+            posId: e
+        })
+    } 
     showToggle = () => {
         this.setState(prevState => ({
             showMore: !prevState.showMore
         }))
     }
     showMore = () => {
+        const { deps, joblevels, nations, politics, positions } = this.state
+        let s = { joblevels, nations, politics, positions }
         return (
-            <div className='serach'>
-                <Button type="primary" onClick={this.search}>高级搜索</Button>
+            <div className='search' style={{ justifyContent: 'left' }}>
+                {
+                    Object.keys(s).map(selectItem => (
+                        <div key={selectItem} style={{marginRight: '10px'}}>
+                            <span style={{display: 'inline-block',width: '70px'}}>{selectItem}</span>
+                            <Select style={{ width: 200 }} onChange={this[selectItem]}>
+                                {
+                                    s[selectItem].map(item => (
+                                        <Option key={item.id} value={item.id}>{item.name}</Option>
+                                    ))
+                                }
+                            </Select>
+                        </div>
+                    ))
+                }
             </div>
         )
     }

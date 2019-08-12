@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: ganbowen
  * @Date: 2019-08-08 19:57:24
- * @LastEditTime: 2019-08-10 17:45:44
+ * @LastEditTime: 2019-08-12 19:54:48
  * @LastEditors: Please set LastEditors
  */
 import * as actionsType from './actionsType'
@@ -14,30 +14,26 @@ const user = (state = {}, action) => {
     switch (action.type) {
     case actionsType.SET_USER:
         sessionStorage.setItem('user', JSON.stringify(action.user))
-        return {...state,...{
+        return {...{
             user : action.user
         }}
     case actionsType.REMOVE_USER:
         sessionStorage.removeItem('user')
-        state.user = {}
-        return state
+        return {...state}
     default:
         return state
     }
 }
 
-const bread = (state = {}, action) => {
+const bread = (state = [], action) => {
+    console.log('state',state,action)
     switch (action.type) {
     case actionsType.SET_BREAD:
-        console.log(action)
         sessionStorage.setItem('bread', JSON.stringify(action.bread))
-        return {...state,...{
-            bread : action.bread
-        }}
+        return [action.bread]
     case actionsType.REMOVE_BREAD:
         sessionStorage.removeItem('bread')
-        state.bread = []
-        return state
+        return ["首页"]
     default:
         return state
     }

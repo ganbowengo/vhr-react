@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { setUser } from '../store/actions'
+import { setUser, removeUser, removeCurrentBreadcrumb } from '../store/actions'
 import { Input, Button, Icon } from 'antd'
 import { login } from '../assets/api/index'
 
@@ -9,6 +9,10 @@ class Login extends React.Component{
     state = {
         userName: 'admin',
         password: '123'
+    }
+    componentWillMount() {
+        this.props.removeUser()
+        this.props.removeCurrentBreadcrumb()
     }
     userNameChange = key => {
         this.setState({
@@ -64,7 +68,9 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
-        setUser: setUser
+        setUser,
+        removeUser,
+        removeCurrentBreadcrumb
     }, dispatch)
 )
 
