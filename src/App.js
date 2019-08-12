@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-09 20:06:46
- * @LastEditTime: 2019-08-11 18:02:25
+ * @LastEditTime: 2019-08-12 11:50:14
  * @LastEditors: Please set LastEditors
  */
 import React, { Component } from 'react'
@@ -20,7 +20,7 @@ class App extends Component {
 	state = {
 	    title : 'React-微人事',
 	    currenBreadcrumb: ['首页']
-	}
+	}  
 	logout = () => {
 	    logout().then(res=>{
 	        if(res.status === 200){
@@ -28,8 +28,13 @@ class App extends Component {
 	        }
 	    })
 	}
+	componentDidMount() {
+	    this.setState({
+	        currenBreadcrumb: this.props.bread
+	    })
+	}
 	dropClick = (e) =>{
-	    let reflect = {
+	    let reflect = { 
 	        user : () => {
 	            this.props.history.push({pathname: '/user'})
 	        },
@@ -66,8 +71,8 @@ class App extends Component {
 	    const { user } = this.props
 	    let { title, currenBreadcrumb } = this.state
 	    return (<DocumentTitle title={title}>
-	        <Layout style={{ minHeight: '100%' }}>
-	            <Header style={{ background: '#fff', display: 'flex', justifyContent:' space-between' }} >
+	        <div style={{ height: '100%',width:'100%' }}>
+	            <Header style={{ width: '100%',background: '#fff', display: 'flex', justifyContent:' space-between' }} >
 	                <h3>微人事</h3>
 	                <Dropdown overlay={this.menu}>
 	                    <div style={{height:'45px'}}>
@@ -76,11 +81,11 @@ class App extends Component {
 	                    </div>
 	                </Dropdown>
 	            </Header>
-	            <Layout>
+	            <div style={{ height:'calc(100% - 64px)',display: 'flex'}}>
 	                <SiderMneu selectMenu={this.selectMenu}></SiderMneu>
-	                <Layout>
-	                    <Content style={{ margin: '0 16px',height: '100%' }}>
-	                        <Breadcrumb style={{ margin: '16px 0' }}>
+	                <div style={{ height: '100%',width:'calc(100% - 200px)' }}>
+	                    <div>
+	                        <Breadcrumb style={{ margin: '16px' }}>
 	                            {
 	                                currenBreadcrumb.map((item,index) => (<Breadcrumb.Item key={index}>{item}</Breadcrumb.Item>))
 	                            }
@@ -88,18 +93,18 @@ class App extends Component {
 	                        <div style={{ padding: 24, background: '#fff', minHeight: 360, height: 'calc(100% - 53px)' }}>
 	                            <Routes />
 	                        </div>
-	                    </Content>
-	                    <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
-	                </Layout>
-	            </Layout>
-	        </Layout>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
 	    </DocumentTitle>);
 	}
 }
 
 const mapStateToProps = state => {
     return {
-        user: state.user
+        user: state.user,
+        bread: state.bread
     }
 }
 export default connect(mapStateToProps)(App)

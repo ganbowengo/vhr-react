@@ -1,6 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { Menu, Icon, Layout } from 'antd'
 import { getMenu } from '../assets/api/index'
+import { setCurrentBreadcrumb } from '../store/actions'
 
 const { SubMenu } = Menu;
 const { Sider } = Layout;
@@ -25,6 +28,7 @@ class SiderMenu extends React.Component {
     }
     handleSelect = e => {
         this.props.selectMenu(e,[this.currentBreadcrumb,e.item.props.children])
+        this.props.setCurrentBreadcrumb([this.currentBreadcrumb,e.item.props.children])
     }
     onOpenChange = (openKeys) => {
         this.currentBreadcrumb = this.rootSubmenuKeys[openKeys[openKeys.length-1]] || this.currentBreadcrumb
@@ -62,4 +66,16 @@ class SiderMenu extends React.Component {
         )
     }
 }
-export default SiderMenu
+
+const mapStateToProps = state => {
+    return {
+        bread: state.bread
+    }
+}
+
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        setCurrentBreadcrumb: setCurrentBreadcrumb
+    }, dispatch)
+)
+export default connect(mapStateToProps, mapDispatchToProps)(SiderMenu)

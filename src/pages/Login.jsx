@@ -26,10 +26,9 @@ class Login extends React.Component{
             password:  this.state.password
         }
         login(parms).then(resp => {
-            if (resp && resp.status === 200) {
+            if (resp.success) {
                 var data = resp.data;
                 this.props.setUser(data.obj)
-                console.log('this.props.user', this.props.user)
                 this.props.history.push({pathname: '/app'})
             }
         });

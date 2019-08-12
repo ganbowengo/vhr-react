@@ -19,3 +19,6 @@ export function splitDate(date){
     if(Object.prototype.toString.call(date) === '[object String]') return date.slice(0,10)
     return date
 }  
+export function initData(data,rtn){ 
+    return data === 'undefined' ? rtn : data
+}  

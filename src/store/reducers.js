@@ -26,6 +26,23 @@ const user = (state = {}, action) => {
     }
 }
 
+const bread = (state = {}, action) => {
+    switch (action.type) {
+    case actionsType.SET_BREAD:
+        console.log(action)
+        sessionStorage.setItem('bread', JSON.stringify(action.bread))
+        return {...state,...{
+            bread : action.bread
+        }}
+    case actionsType.REMOVE_BREAD:
+        sessionStorage.removeItem('bread')
+        state.bread = []
+        return state
+    default:
+        return state
+    }
+}
 export const reducer = combineReducers({
-    user
+    user,
+    bread
 })

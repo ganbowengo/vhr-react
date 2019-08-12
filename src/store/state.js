@@ -5,9 +5,12 @@
  * @LastEditTime: 2019-08-10 17:47:14
  * @LastEditors: Please set LastEditors
  */
-const user = sessionStorage.getItem('user') || "{}"
+import { initData } from '../assets/js/tool'
+const user = initData(sessionStorage.getItem('user') ,"{}")
+const bread = initData(sessionStorage.getItem('bread') ,"[]")
 const initialState = {
-    user: JSON.parse(user)
+    user: JSON.parse(user),
+    bread: JSON.parse(bread)
 }
 
 export default initialState;
