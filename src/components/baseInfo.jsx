@@ -1,8 +1,10 @@
 import React from 'react'
-import { Input, Button, Table, Select } from 'antd'
+import { Input, Button, Table, Select, Dropdown, TreeSelect, DatePicker, Radio } from 'antd'
 import { getEmpInfo, getBasicData } from '../assets/api'
 import { splitDate } from '../assets/js/tool'
 const { Option } = Select
+const { TreeNode } = TreeSelect
+const { RangePicker } = DatePicker
 
 class Test extends React.Component {
     state = {
@@ -216,28 +218,64 @@ class Test extends React.Component {
         })
     } 
     positions = e => {
-        console.log('e',e)
         this.setState({
             posId: e
         })
-    } 
-    showToggle = () => {
-        this.setState(prevState => ({
-            showMore: !prevState.showMore
-        }))
     }
+    treeSelect = e => {
+        this.setState({
+            departmentId: e
+        })
+    }
+    onDateChange = (e,dateString) => {
+        this.setState({
+            beginDateScope: dateString.join(',')
+        })
+    }
+    onEngageFormChange = e => {
+        this.setState({
+            engageForm: e.target.value
+        })
+    }
+    showToggle = () => {
+        let s = this.state.showMore
+        this.setState(prevState => ({showMore: !prevState.showMore}))
+        if(this.state.showMore){
+            this.setState({
+                politicId: '',
+                nationId: '',
+                posId: '',
+                jobLevelId:'',
+                engageForm: '',
+                departmentId: '',
+                beginDateScope: ''
+            })
+        }
+    }
+    loop = data =>(
+        data.map(item => {
+            if (item.children && item.children.length) {
+                return (
+                    <TreeNode key={item.id} value={item.id} title={item.name}>
+                        {this.loop(item.children)}
+                    </TreeNode>
+                )
+            }
+            return <TreeNode key={item.id} value={item.id} title={item.name} />
+        })
+    )
     showMore = () => {
-        const { deps, joblevels, nations, politics, positions } = this.state
-        let s = { joblevels, nations, politics, positions }
+        const { deps, joblevels, nations, politics, positions, departmentId, engageForm } = this.state
+        let selectArr = { joblevels, nations, politics, positions }
         return (
             <div className='search' style={{ justifyContent: 'left' }}>
                 {
-                    Object.keys(s).map(selectItem => (
-                        <div key={selectItem} style={{marginRight: '10px'}}>
-                            <span style={{display: 'inline-block',width: '70px'}}>{selectItem}</span>
+                    Object.keys(selectArr).map(selectItem => (
+                        <div key={selectItem} style={{margin: '10px'}}>
+                            <span style={{display: 'inline-block',width: 80}}>{selectItem}</span>
                             <Select style={{ width: 200 }} onChange={this[selectItem]}>
                                 {
-                                    s[selectItem].map(item => (
+                                    selectArr[selectItem].map(item => (
                                         <Option key={item.id} value={item.id}>{item.name}</Option>
                                     ))
                                 }
@@ -245,6 +283,30 @@ class Test extends React.Component {
                         </div>
                     ))
                 }
+                <div style={{margin: '10px'}}>
+                    <span style={{display: 'inline-block',width: 80}}>department</span>
+                    <TreeSelect
+                        blockNode
+                        showLine
+                        defaultExpandAll
+                        style={{ width: 200 }}
+                        onSelect={this.treeSelect}>
+                        {this.loop(deps)}
+                    </TreeSelect>
+                </div>
+                <div style={{margin: '10px'}}>
+                    <span style={{display: 'inline-block',width: 80}}>engage</span>
+                    <Radio.Group onChange={this.onEngageFormChange} value={engageForm}>
+                        <Radio value='劳动合同'>劳动合同</Radio>
+                        <Radio value='劳务合同'>劳务合同</Radio>
+                    </Radio.Group>
+                </div>
+                <div style={{margin: '10px'}}>
+                    <span style={{display: 'inline-block',width: 80}}>dateScope</span>
+                    <RangePicker 
+                        style={{ width: 280 }}
+                        onChange={this.onDateChange} />
+                </div>
             </div>
         )
     }
