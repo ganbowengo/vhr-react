@@ -1,4 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { setDict } from '@src/store/actions'
+
 import { Input, Button, Select, Dropdown, TreeSelect, DatePicker, Radio } from 'antd'
 import { getEmpInfo, getBasicData } from '@src/assets/api'
 import BaseInfoModal from './modal'
@@ -8,7 +12,7 @@ const { Option } = Select
 const { TreeNode } = TreeSelect
 const { RangePicker } = DatePicker
 
-class Test extends React.Component {
+class BaseInfo extends React.Component {
     state = {
         page: 1,
         size: 10,
@@ -37,6 +41,7 @@ class Test extends React.Component {
                 this.setState({
                     ...res.data
                 })
+                this.props.setDict(res.data)
             }
         })
     }
@@ -104,6 +109,7 @@ class Test extends React.Component {
         this.setState(prevState => ({visible: !prevState.visible}))
     }
     showEdit = (e) => {
+        e.modalTitle = '修改基础信息'
         this.setState({visible: true, modalData: e})
     }
     showToggle = () => {
@@ -205,4 +211,11 @@ class Test extends React.Component {
         )
     }
 }
-export default Test
+
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        setDict
+    }, dispatch)
+)
+
+export default connect(null,mapDispatchToProps)(BaseInfo)

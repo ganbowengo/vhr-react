@@ -26,7 +26,6 @@ const user = (state = {}, action) => {
 }
 
 const bread = (state = [], action) => {
-    console.log('state',state,action)
     switch (action.type) {
     case actionsType.SET_BREAD:
         sessionStorage.setItem('bread', JSON.stringify(action.bread))
@@ -38,7 +37,19 @@ const bread = (state = [], action) => {
         return state
     }
 }
+
+const dict = (state = {}, action) => {
+    switch (action.type) {
+    case actionsType.SET_DICT:
+        return {...{
+            dict: action.dict
+        }}
+    default:
+        return state
+    }
+}
 export const reducer = combineReducers({
     user,
-    bread
+    bread,
+    dict
 })

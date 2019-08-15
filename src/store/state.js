@@ -10,6 +10,7 @@ const user = initData(sessionStorage.getItem('user') ,"{}")
 const bread = initData(sessionStorage.getItem('bread') ,"['首页']")
 const initialState = {
     user: JSON.parse(user),
-    bread: JSON.parse(bread)
+    bread: JSON.parse(bread),
+    dict: {}
 }
 export default initialState;

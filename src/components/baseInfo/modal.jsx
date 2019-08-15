@@ -1,7 +1,13 @@
 import React from 'react';
 import { Modal, Button, Input, Select, Form } from 'antd';
 
+
 class BaseInfoFromContent extends React.Component {
+    componentWillMount() {
+        this.setState({
+            ...this.props.baseInfoData
+        })
+    }
     formData = [
         {
             label : '姓名',
@@ -14,6 +20,18 @@ class BaseInfoFromContent extends React.Component {
             value : 'idCard',
             options: {},
             component: () => (<Input />)
+        },
+        {
+            label : '政治面貌',
+            value : 'politicsStatus.name',
+            options: {},
+            component: () => (<Select style={{ width: 200 }} onChange={this[selectItem]}>
+                {
+                    selectArr[selectItem].map(item => (
+                        <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>
+                    ))
+                }
+            </Select>)
         }
     ]
     
@@ -30,12 +48,13 @@ class BaseInfoFromContent extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form
+        console.log('this.state',this.state)
         return (
             <Form {...this.formItemLayout} layout='inline'>
                 {
                     this.formData.map(item => (
-                        <Form.Item style={{width: 280}} label={item.label}>
-                            {getFieldDecorator(item.value, item.options)(item.component())}
+                        <Form.Item key={item.value} style={{width: 280}} label={item.label}>
+                            {getFieldDecorator(item.value, {...item.options,...{initialValue : this.state[item.value]}})(item.component())}
                         </Form.Item>
                     ))
                 }
@@ -58,12 +77,12 @@ class BaseInfoModal extends React.Component {
         let { modalData }= this.props
         return (
             <Modal
-                title="Basic Modal"
+                title={modalData.modalTitle}
                 width={720}
                 visible={this.props.visible}
                 onOk={this.handleOk}
                 onCancel={this.handleCancel}>
-                <BaseInfoFrom></BaseInfoFrom>
+                <BaseInfoFrom baseInfoData={modalData}></BaseInfoFrom>
             </Modal>
         )
     }
