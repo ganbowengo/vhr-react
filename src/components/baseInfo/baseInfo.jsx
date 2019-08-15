@@ -1,7 +1,9 @@
 import React from 'react'
-import { Input, Button, Table, Select, Dropdown, TreeSelect, DatePicker, Radio } from 'antd'
-import { getEmpInfo, getBasicData } from '../assets/api'
-import { splitDate } from '../assets/js/tool'
+import { Input, Button, Select, Dropdown, TreeSelect, DatePicker, Radio } from 'antd'
+import { getEmpInfo, getBasicData } from '@src/assets/api'
+import BaseInfoModal from './modal'
+import BaseInfoTable from './table'
+
 const { Option } = Select
 const { TreeNode } = TreeSelect
 const { RangePicker } = DatePicker
@@ -25,152 +27,12 @@ class Test extends React.Component {
         politics: [],
         positions: [],
         workID: [],
-        columns:[
-            {
-                title: '姓名',
-                dataIndex: 'name',
-                width: 150,
-                fixed: 'left'
-            },
-            {
-                title: '工号',
-                dataIndex: 'workID',
-                width: 150
-            },
-            {
-                title: '性别',
-                dataIndex: 'gender',
-                width: 150
-            },
-            {
-                title: '出生日期',
-                dataIndex: 'birthday',
-                width: 150,
-                render: birthday => splitDate(birthday),
-                
-            },
-            {
-                title: '身份证号码',
-                dataIndex: 'idCard',
-                width: 200
-            },
-            {
-                title: '婚姻状况',
-                dataIndex: 'wedlock',
-                width: 150
-            },
-            {
-                title: '民族',
-                dataIndex: 'nation.name',
-                width: 150
-            },
-            {
-                title: '籍贯',
-                dataIndex: 'nativePlace',
-                width: 150
-            },
-            {
-                title: '政治面貌',
-                dataIndex: 'politicsStatus.name',
-                width: 150
-            },
-            {
-                title: '电子邮件',
-                dataIndex: 'email',
-                width: 200
-            },
-            {
-                title: '电话号码',
-                dataIndex: 'phone',
-                width: 150
-            },
-            {
-                title: '联系地址',
-                dataIndex: 'address',
-                width: 250
-            },
-            {
-                title: '所属部门',
-                dataIndex: 'department.name',
-                width: 150
-            },
-            {
-                title: '职位',
-                dataIndex: 'position.name',
-                width: 150
-            },
-            {
-                title: '职称',
-                dataIndex: 'jobLevel.name',
-                width: 150
-            },
-            {
-                title: '聘用形式',
-                dataIndex: 'engageForm',
-                width: 150
-            },
-            {
-                title: '入职日期',
-                dataIndex: 'beginDate',
-                render: beginDate => splitDate(beginDate),
-                width: 150
-            },
-            {
-                title: '转正日期',
-                dataIndex: 'conversionTime',
-                render: conversionTime => splitDate(conversionTime),
-                width: 150
-            },
-            {
-                title: '合同起始日期',
-                dataIndex: 'beginContract',
-                render: beginContract => splitDate(beginContract),
-                width: 150
-            },
-            {
-                title: '合同截至日期',
-                dataIndex: 'endContract',
-                render: endContract => splitDate(endContract),
-                width: 150
-            },
-            {
-                title: '合同期限',
-                dataIndex: 'contractTerm',
-                render: contractTerm => contractTerm,
-                width: 150
-            },
-            {
-                title: '最高学历',
-                dataIndex: 'tiptopDegree'
-            },
-            {
-                title: '操作',
-                dataIndex: 'operation',
-                fixed: 'right',
-                width: 150,
-                render: (text, record) => (<div>
-                    <Button size='small'>编辑</Button>
-                    <Button size='small' type="primary">查看</Button>
-                    <Button size='small' type="danger">删除</Button>
-                </div>)
-            }
-        ],
-        data: []
+        visible: false,
+        modalData: {}
     }
-    rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        },
-        getCheckboxProps: record => ({
-            disabled: record.name === 'Disabled User', // Column configuration not to be checked
-            name: record.name,
-        }),
-        fixed: true,
-
-    };
+    ;
     componentWillMount() {
         getBasicData().then(res => {
-            console.log('res',res.data)
             if(res.success){
                 this.setState({
                     ...res.data
@@ -178,19 +40,7 @@ class Test extends React.Component {
             }
         })
     }
-    search = _ => {
-        let {page,size,keywords,politicId,nationId,posId,jobLevelId,engageForm,departmentId,beginDateScope} = this.state
-        let params ={page,size,keywords,politicId,nationId,posId,jobLevelId,engageForm,departmentId,beginDateScope}
-        getEmpInfo(params).then(res => {
-            if(res.success){
-                this.setState({
-                    data: res.data.emps
-                })
-            }
-        }).catch(err => {
-
-        })
-    }
+    
     handleEnter = e => {
         this.setState({
             keywords: e.target.value
@@ -236,6 +86,25 @@ class Test extends React.Component {
         this.setState({
             engageForm: e.target.value
         })
+    }
+    search = _ => {
+        let {page,size,keywords,politicId,nationId,posId,jobLevelId,engageForm,departmentId,beginDateScope} = this.state
+        let params ={page,size,keywords,politicId,nationId,posId,jobLevelId,engageForm,departmentId,beginDateScope}
+        getEmpInfo(params).then(res => {
+            if(res.success){
+                this.setState({
+                    data: res.data.emps
+                })
+            }
+        }).catch(err => {
+
+        })
+    }
+    visibleToggle = (e) => {
+        this.setState(prevState => ({visible: !prevState.visible}))
+    }
+    showEdit = (e) => {
+        this.setState({visible: true, modalData: e})
     }
     showToggle = () => {
         let s = this.state.showMore
@@ -311,7 +180,7 @@ class Test extends React.Component {
         )
     }
     render() {
-        let { keywords, showMore, data, columns } = this.state
+        let { keywords, showMore, data, visible, modalData } = this.state
         return (
             <div>
                 <div className='search'>
@@ -328,9 +197,10 @@ class Test extends React.Component {
                 </div>
                 {showMore ? this.showMore() : ''}
                 <div className='table-box'>
-                    <Table bordered size="small" rowKey='workID' rowSelection={this.rowSelection} columns={columns} dataSource={data} scroll={{ x: 3800, y: 500 }} />
+                    <BaseInfoTable showEdit={this.showEdit} data={data} />   
                 </div>
-                <div className='page-box'>123123</div>
+                <div className='page-box'><Button onClick={this.visibleToggle}></Button></div>
+                <BaseInfoModal visible={visible} modalData={modalData} onClose={this.visibleToggle}></BaseInfoModal>
             </div>
         )
     }
