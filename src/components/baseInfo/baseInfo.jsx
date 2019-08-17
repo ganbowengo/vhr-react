@@ -7,10 +7,8 @@ import { Input, Button, Select, Dropdown, TreeSelect, DatePicker, Radio } from '
 import { getEmpInfo, getBasicData } from '@src/assets/api'
 import BaseInfoModal from './modal'
 import BaseInfoTable from './table'
+import ShowMore from './showMore'
 
-const { Option } = Select
-const { TreeNode } = TreeSelect
-const { RangePicker } = DatePicker
 
 class BaseInfo extends React.Component {
     state = {
@@ -25,14 +23,9 @@ class BaseInfo extends React.Component {
         departmentId: '',
         beginDateScope: '',
         showMore: false,
-        deps: [],
-        joblevels: [],
-        nations: [],
-        politics: [],
-        positions: [],
-        workID: [],
         visible: false,
-        modalData: {}
+        modalData: {},
+        tableDate: {}
     }
     ;
     componentWillMount() {
@@ -57,39 +50,11 @@ class BaseInfo extends React.Component {
             keywords: e.target.value
         })
     }
-    joblevels = e => {
+    onPageChange = e => {
         this.setState({
-            jobLevelId: e
-        })
-    }
-    nations = e => {
-        this.setState({
-            nationId: e
-        })
-    } 
-    politics = e => {
-        this.setState({
-            politicId: e
-        })
-    } 
-    positions = e => {
-        this.setState({
-            posId: e
-        })
-    }
-    treeSelect = e => {
-        this.setState({
-            departmentId: e
-        })
-    }
-    onDateChange = (e,dateString) => {
-        this.setState({
-            beginDateScope: dateString.join(',')
-        })
-    }
-    onEngageFormChange = e => {
-        this.setState({
-            engageForm: e.target.value
+            ...e
+        },() => {
+            this.search()
         })
     }
     search = _ => {
@@ -98,22 +63,20 @@ class BaseInfo extends React.Component {
         getEmpInfo(params).then(res => {
             if(res.success){
                 this.setState({
-                    data: res.data.emps
+                    tableDate:{
+                        data: res.data.emps,
+                        total: res.data.count
+                    }
                 })
             }
         }).catch(err => {
 
         })
     }
-    visibleToggle = (e) => {
-        this.setState(prevState => ({visible: !prevState.visible}))
-    }
-    showEdit = (e) => {
-        e.modalTitle = '修改基础信息'
-        this.setState({visible: true, modalData: e})
+    visibleToggle = (e = {type : 'add'}) => {
+        this.setState(prevState => ({visible: !prevState.visible, modalData: e}))
     }
     showToggle = () => {
-        let s = this.state.showMore
         this.setState(prevState => ({showMore: !prevState.showMore}))
         if(this.state.showMore){
             this.setState({
@@ -127,66 +90,12 @@ class BaseInfo extends React.Component {
             })
         }
     }
-    loop = data =>(
-        data.map(item => {
-            if (item.children && item.children.length) {
-                return (
-                    <TreeNode key={item.id} value={item.id} title={item.name}>
-                        {this.loop(item.children)}
-                    </TreeNode>
-                )
-            }
-            return <TreeNode key={item.id} value={item.id} title={item.name} />
-        })
-    )
-    showMore = () => {
-        const { deps, joblevels, nations, politics, positions, departmentId, engageForm } = this.state
-        let selectArr = { joblevels, nations, politics, positions }
-        return (
-            <div className='search' style={{ justifyContent: 'left' }}>
-                {
-                    Object.keys(selectArr).map(selectItem => (
-                        <div key={selectItem} style={{margin: '10px'}}>
-                            <span style={{display: 'inline-block',width: 80}}>{selectItem}</span>
-                            <Select style={{ width: 200 }} onChange={this[selectItem]}>
-                                {
-                                    selectArr[selectItem].map(item => (
-                                        <Option key={item.id} value={item.id}>{item.name}</Option>
-                                    ))
-                                }
-                            </Select>
-                        </div>
-                    ))
-                }
-                <div style={{margin: '10px'}}>
-                    <span style={{display: 'inline-block',width: 80}}>department</span>
-                    <TreeSelect
-                        blockNode
-                        showLine
-                        defaultExpandAll
-                        style={{ width: 200 }}
-                        onSelect={this.treeSelect}>
-                        {this.loop(deps)}
-                    </TreeSelect>
-                </div>
-                <div style={{margin: '10px'}}>
-                    <span style={{display: 'inline-block',width: 80}}>engage</span>
-                    <Radio.Group onChange={this.onEngageFormChange} value={engageForm}>
-                        <Radio value='劳动合同'>劳动合同</Radio>
-                        <Radio value='劳务合同'>劳务合同</Radio>
-                    </Radio.Group>
-                </div>
-                <div style={{margin: '10px'}}>
-                    <span style={{display: 'inline-block',width: 80}}>dateScope</span>
-                    <RangePicker 
-                        style={{ width: 280 }}
-                        onChange={this.onDateChange} />
-                </div>
-            </div>
-        )
+    onConditionChange = e => {
+        this.setState({...e})
     }
+    
     render() {
-        let { keywords, showMore, data, visible, modalData } = this.state
+        let { keywords, showMore, tableDate, visible, modalData, departmentId, engageForm } = this.state
         return (
             <div>
                 <div className='search'>
@@ -198,15 +107,14 @@ class BaseInfo extends React.Component {
                     <div>
                         <Button type="success" icon="upload" onClick={this.showToggle}>导入数据</Button>
                         <Button type="success" icon="download" onClick={this.showToggle}>导出数据</Button>
-                        <Button type="primary" icon="plus" onClick={this.showToggle}>添加员工</Button>
+                        <Button type="primary" icon="plus" onClick={() => this.visibleToggle()/* add */}>添加员工</Button>
                     </div>
                 </div>
-                {showMore ? this.showMore() : ''}
+                {showMore ? <ShowMore onConditionChange={this.onConditionChange} /> : ''}
                 <div className='table-box'>
-                    <BaseInfoTable showEdit={this.showEdit} data={data} />   
+                    <BaseInfoTable onCrrentChange={this.onPageChange} onShowEdit={this.visibleToggle /* update */} tableDate={tableDate} />   
                 </div>
-                <div className='page-box'><Button onClick={this.visibleToggle}></Button></div>
-                <BaseInfoModal visible={visible} modalData={modalData} onClose={this.visibleToggle}></BaseInfoModal>
+                <BaseInfoModal visible={visible} modalData={modalData} onClose={this.visibleToggle /* close */}></BaseInfoModal>
             </div>
         )
     }

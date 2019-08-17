@@ -20,7 +20,7 @@ axios.interceptors.response.use(data => {
     if (data.status && data.data.status === 500) {
         message.error(data.data.msg);
         window.location.href = '#/login'
-        return new Promise()
+        return data
     }
     if (data.data.msg) {
         message.success(data.data.msg);

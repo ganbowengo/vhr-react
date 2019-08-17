@@ -128,25 +128,44 @@ class BaseInfoTable extends React.Component {
             fixed: 'right',
             width: 150,
             render: (text, record) => (<div>
-                <Button size='small' onClick={() => { this.onclick(record) }}>编辑</Button>
+                <Button size='small' onClick={() => this.onclick(record)}>编辑</Button>
                 <Button size='small' type="primary">查看</Button>
                 <Button size='small' type="danger">删除</Button>
             </div>)
         }
     ]
 
+    onclick = (row) => {
+        row.type = 'update'
+        this.props.onShowEdit(row)
+    }
+
+    pagination = {
+        onChange: (page,size) => {
+            this.props.onCrrentChange({
+                page,
+                size
+            })
+        },
+        onShowSizeChange: (page,size) => {
+            this.props.onCrrentChange({
+                page,
+                size
+            })
+        },
+        total: 0,
+        showSizeChanger: true
+    }
     rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
         },
         fixed: true
     }
-
-    onclick = (row) => {
-        this.props.showEdit(row)
-    }
+   
     render () {
-        let {data} = this.props
+        let {tableDate} = this.props
+        this.pagination.total = tableDate.total
         return (
             <Table 
                 bordered 
@@ -154,7 +173,8 @@ class BaseInfoTable extends React.Component {
                 rowKey='workID' 
                 rowSelection={this.rowSelection} 
                 columns={this.columns}
-                dataSource={data} 
+                dataSource={tableDate.data} 
+                pagination={this.pagination}
                 scroll={{ x: 3800, y: 500 }} />
         )
     }

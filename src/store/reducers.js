@@ -41,9 +41,7 @@ const bread = (state = [], action) => {
 const dict = (state = {}, action) => {
     switch (action.type) {
     case actionsType.SET_DICT:
-        return {...{
-            dict: action.dict
-        }}
+        return {...action.dict}
     default:
         return state
     }
