@@ -5,8 +5,10 @@ import { Modal } from 'antd';
 import BaseInfoFrom from './from'
 
 class BaseInfoModal extends React.Component {
-    handleOk = () => {
-
+    handleOk = e => {
+        this.form.props.form.validateFields((err,values) => {
+            console.log('err,values',err,values)
+        })
     }
     handleCancel = () => {
         this.props.onClose()
@@ -20,7 +22,7 @@ class BaseInfoModal extends React.Component {
                 visible={this.props.visible}
                 onOk={this.handleOk}
                 onCancel={this.handleCancel}>
-                <BaseInfoFrom baseInfoData={modalData}></BaseInfoFrom>
+                <BaseInfoFrom wrappedComponentRef={(form) => this.form = form} baseInfoData={modalData}></BaseInfoFrom>
             </Modal>
         )
     }
